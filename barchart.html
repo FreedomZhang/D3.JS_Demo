@@ -1,20 +1,27 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title></title>
     <script src="d3.v3.min.js"></script>
-	<meta charset="utf-8" />
+    <meta charset="utf-8" />
 </head>
 <body>
-   <button type="button" onclick="mysort()">排序</button>
-    <button type="button" onclick="myadd()">增加数据</button>
+
+    <div id="test">
+        <button type="button" onclick="mysort()">排序</button>
+        <button type="button" onclick="myadd()">增加数据</button>
+    </div>
+    <div id="Tu"></div>
 </body>
 <script type="text/javascript">
+
+    var data = { "name": "root", "children": [{ "name": "lb1", "value": 100 }, { "name": "lb2", "value": 200 }, { "name": "lb3", "value": 300 }] };
+
     var dataset = [50, 43, 120, 87, 99, 167, 142];
     var width = 400;
     var height = 400;
-    var svg = d3.select("body")
+    var svg = d3.select("#test")
     .append("svg")
     .attr("width", width)
     .attr("height", height);
@@ -23,7 +30,7 @@
     var rectStep = 35;
 
     var rectWidth = 30;
-
+    //console.log(data.children);
     var rect = svg.selectAll("rect")
     .data(dataset)
     .enter()
@@ -116,5 +123,27 @@
         dataset.push(Math.floor(Math.random() * 100));//添加一项
         draw();
     }
+</script>
+
+
+<script type="text/javascript">
+    var data = { "name": "root", "children": [{ "name": "lb1", "value": 100 }, { "name": "lb2", "value": 200 }, { "name": "lb3", "value": 300 }] };
+    var color = ["rgb(142, 194, 169)", "rgb(97, 160, 168)", "rgb(193, 184, 140)"];
+    var svg = d3.select("#Tu")
+   .append("svg")
+   .attr("width", 600)
+   .attr("height", 600);
+
+    var rect = svg.selectAll("rect")
+   .data(data.children)
+   .enter()
+   .append("rect")
+   .attr("fill", function (d, i) { return color[i]; })
+   .attr("x", function (d, i) { return 120 * i; })
+   .attr("y", function (d) { return 600 - d.value; })
+   .attr("width", 100)
+   .attr("height", function (d) { return d.value; });
+
+
 </script>
 </html>
