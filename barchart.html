@@ -4,7 +4,30 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title></title>
     <script src="d3.v3.min.js"></script>
+
     <meta charset="utf-8" />
+    <style type="text/css">
+        #tips
+        {
+            border: 1px solid red;
+            position: absolute;
+        }
+
+        a:hover
+        {
+            color: #f60;
+            text-decoration: underline;
+        }
+
+        .tip
+        {
+            width: 200px;
+            border: 2px solid #ddd;
+            padding: 8px;
+            background: #f1f1f1;
+            color: #666;
+        }
+    </style>
 </head>
 <body>
 
@@ -13,10 +36,11 @@
         <button type="button" onclick="myadd()">增加数据</button>
     </div>
     <div id="Tu"></div>
+    <div id="mjs:tip" class="tip" style="position: absolute; left: 0; top: 0; display: none;"></div>
 </body>
 <script type="text/javascript">
 
-    var data = { "name": "root", "children": [{ "name": "lb1", "value": 100 }, { "name": "lb2", "value": 200 }, { "name": "lb3", "value": 300 }] };
+    var data = { "name": "root", "children": [{ "name": "lb1", "value": 100 }, { "name": "lb2", "value": 200 }, { "name": "lb3", "value": 300 }, { "name": "lb4", "value": 200 }] };
 
     var dataset = [50, 43, 120, 87, 99, 167, 142];
     var width = 400;
@@ -127,8 +151,8 @@
 
 
 <script type="text/javascript">
-    var data = { "name": "root", "children": [{ "name": "lb1", "value": 100 }, { "name": "lb2", "value": 200 }, { "name": "lb3", "value": 300 }] };
-    var color = ["rgb(142, 194, 169)", "rgb(97, 160, 168)", "rgb(193, 184, 140)"];
+    var data = { "name": "root", "children": [{ "name": "lb1", "value": 100 }, { "name": "lb2", "value": 200 }, { "name": "lb3", "value": 300 },{ "name": "lb4", "value": 200 }] };
+    var color = ["rgb(142, 194, 169)", "rgb(97, 160, 168)", "rgb(193, 184, 140)", "rgb(193, 184, 150)"];
     var svg = d3.select("#Tu")
    .append("svg")
    .attr("width", 600)
@@ -138,12 +162,64 @@
    .data(data.children)
    .enter()
    .append("rect")
+        .attr("class","rectt")
    .attr("fill", function (d, i) { return color[i]; })
    .attr("x", function (d, i) { return 120 * i; })
    .attr("y", function (d) { return 600 - d.value; })
    .attr("width", 100)
-   .attr("height", function (d) { return d.value; });
+   .attr("height", function (d) { return d.value; })
+    .on('mousemove', mouserover)
+    .on('mouseout', mouseout);
 
 
+    //移入时事件onmousemove
+    function mouserover(d) {
+        var ArrayXY = getMousePos();
+        var Dwidth = 100;//提示框宽度
+        var Dheight = 50;//提示框高度
+
+        var HTMLheight = document.body.clientHeight;//网页可见区域高
+        //var HTMLJheight = document.body.scrollTop;//网页被卷去的高
+
+        var Mheight = ArrayXY[1];//鼠标当前位置高度
+        var Mwidht = ArrayXY[0];//鼠标当前位置宽度
+
+        var strT = "网页可见区域" + HTMLheight + "鼠标高度" + Mheight;
+
+        d3.selectAll("#tips").remove();
+        d3.select("body").append("div")
+       .attr("id", "tips")
+       .attr("width", Dwidth+"px")
+       .attr('height', Dheight+"px")
+       .style('top', (Mheight - 50) + 'px').style('left', Mwidht + 'px');
+
+        d3.select("#tips").append("p").append("text").text("标题名称："+d.name).append("p").append(d.value).text(d.value);
+
+    }
+    //移除时事件
+    function mouseout() {
+        d3.selectAll("#tips").remove();
+    }
+
+    function alt() {
+        //d3.select("body").append("div").attr("height", 200).attr("width", 200).style("border", "1px solid");
+        //onMouseOver
+        getMousePos();
+    }
+    function getMousePos(event) {
+        var ht = document.body.clientWidth
+        var wh = document.body.clientHeight
+
+        var e = event || window.event;
+        var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;
+        var scrollY = document.documentElement.scrollTop || document.body.scrollTop;
+        var x = e.pageX || e.clientX + scrollX;
+        var y = e.pageY || e.clientY + scrollY;
+        //alert('x: ' + x + '\ny: ' + y+'可见宽度'+wh+'可见高度'+ht);
+        var ArrayXY = new Array(x, y, ht, wh);
+        return ArrayXY;
+
+
+    }
 </script>
 </html>
